@@ -44,17 +44,21 @@ class SmppTransmitter
     /**
      * @param string $to
      * @param string $message
+     * @param integer $encoding
      *
      * @return string|void`
      */
-    public function send($to, $message)
+    public function send($to, $message, $encoding = SMPP::DATA_CODING_DEFAULT)
     {
-        $message = GsmEncoder::utf8_to_gsm0338($message);
+        if ($encoding == SMPP::DATA_CODING_DEFAULT) {
+            $message = GsmEncoder::utf8_to_gsm0338($message);
+        }
+
         $from = new SmppAddress($this->signature, SMPP::TON_ALPHANUMERIC);
         $to = new SmppAddress(intval($to), SMPP::TON_INTERNATIONAL, SMPP::NPI_E164);
 
         $this->openSmppConnection();
-        $messageId = $this->smpp->sendSMS($from, $to, $message);
+        $messageId = $this->smpp->sendSMS($from, $to, $message, null, $encoding);
         $this->closeSmppConnection();
 
         return $messageId;
