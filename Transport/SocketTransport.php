@@ -426,9 +426,10 @@ class SocketTransport implements TransportInterface
         $d = "";
         $r = 0;
         $readTimeout = socket_get_option($this->socket, SOL_SOCKET, SO_RCVTIMEO);
+        $recvFlag = defined('MSG_DONTWAIT') ? MSG_DONTWAIT : 0;
         while ($r < $length) {
             $buf = '';
-            $r += socket_recv($this->socket, $buf, $length-$r, MSG_DONTWAIT);
+            $r += socket_recv($this->socket, $buf, $length-$r, $recvFlag);
             if ($r === false) {
                 throw new SocketTransportException('Could not read '.$length.' bytes from socket; '.socket_strerror(socket_last_error()), socket_last_error());
             }
