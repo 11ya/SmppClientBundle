@@ -55,7 +55,7 @@ class SmppTransmitter
         }
 
         $from = new SmppAddress($this->signature, SMPP::TON_ALPHANUMERIC);
-        $to = new SmppAddress(intval($to), SMPP::TON_INTERNATIONAL, SMPP::NPI_E164);
+        $to = new SmppAddress(preg_replace('/\D/', '', $to), SMPP::TON_INTERNATIONAL, SMPP::NPI_E164);
 
         $this->openSmppConnection();
         $messageId = $this->smpp->sendSMS($from, $to, $message, null, $encoding);
