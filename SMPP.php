@@ -31,6 +31,8 @@ class SMPP
     const OUTBIND = 0x0000000B;
     const ENQUIRE_LINK = 0x00000015;
     const ENQUIRE_LINK_RESP = 0x80000015;
+    const SUBMIT_MULTI = 0x00000021;
+    const SUBMIT_MULTI_RESP = 0x80000021;
 
     //  Command status - SMPP v3.4 - 5.1.3 page 112-114
     const ESME_ROK = 0x00000000; // No Error

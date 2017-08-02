@@ -55,10 +55,38 @@ class SmppTransmitter
         }
 
         $from = new SmppAddress($this->signature, SMPP::TON_ALPHANUMERIC);
+
         $to = new SmppAddress(preg_replace('/\D/', '', $to), SMPP::TON_INTERNATIONAL, SMPP::NPI_E164);
 
         $this->openSmppConnection();
         $messageId = $this->smpp->sendSMS($from, $to, $message, null, $encoding);
+        $this->closeSmppConnection();
+
+        return $messageId;
+    }
+
+    /**
+     * @param iterable $to
+     * @param string $message
+     * @param integer $encoding
+     *
+     * @return string|void`
+     */
+    public function sendMulti($to, $message, $encoding = SMPP::DATA_CODING_DEFAULT)
+    {
+        if ($encoding == SMPP::DATA_CODING_DEFAULT) {
+            $message = GsmEncoder::utf8_to_gsm0338($message);
+        }
+
+        $from = new SmppAddress($this->signature, SMPP::TON_ALPHANUMERIC);
+
+        $destination = [];
+        foreach ($to as $number) {
+            $destination[] = new SmppAddress(preg_replace('/\D/', '', $to), SMPP::TON_INTERNATIONAL, SMPP::NPI_E164);;
+        }
+
+        $this->openSmppConnection();
+        $messageId = $this->smpp->sendMultiSMS($from, $destination, $message, null, $encoding);
         $this->closeSmppConnection();
 
         return $messageId;
